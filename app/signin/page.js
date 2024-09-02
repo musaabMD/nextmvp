@@ -5,7 +5,7 @@ import { useState } from "react";
 import { createClient } from "@/libs/supabase/client";
 import toast from "react-hot-toast";
 import config from "@/config";
-
+import Header from "@/components/Header";
 // This a login/singup page for Supabase Auth.
 // Successfull login redirects to /api/auth/callback where the Code Exchange is processed (see app/api/auth/callback/route.js).
 export default function Login() {
@@ -50,9 +50,12 @@ export default function Login() {
   };
 
   return (
-    <main className="p-8 md:p-24" data-theme={config.colors.theme}>
+
+<>
+<Header/>
+<main className="p-8 md:p-24" data-theme={config.colors.theme}>
       <div className="text-center mb-4">
-        <Link href="/" className="btn btn-ghost btn-sm">
+        {/* <Link href="/" className="btn btn-ghost btn-sm">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
@@ -66,9 +69,9 @@ export default function Login() {
             />
           </svg>
           Home
-        </Link>
+        </Link> */}
       </div>
-      <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-center mb-12">
+      <h1 className="text-3xl md:text-6xl font-extrabold tracking-tight text-center mb-12">
         Sign-in to {config.appName}{" "}
       </h1>
 
@@ -109,9 +112,7 @@ export default function Login() {
           Sign-up with Google
         </button>
 
-        <div className="divider text-xs text-base-content/50 font-medium">
-          OR
-        </div>
+    
 
         <form
           className="form-control w-full space-y-4"
@@ -122,7 +123,7 @@ export default function Login() {
             type="email"
             value={email}
             autoComplete="email"
-            placeholder="tom@cruise.com"
+            placeholder="youremail@whatever.com"
             className="input input-bordered w-full placeholder:opacity-60"
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -140,5 +141,8 @@ export default function Login() {
         </form>
       </div>
     </main>
+</>
+
+
   );
 }

@@ -6,10 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/libs/supabase/client";
 import config from "@/config";
 
-// A simple button to sign in with our providers (Google & Magic Links).
-// It automatically redirects user to callbackUrl (config.auth.callbackUrl) after login, which is normally a private page for users to manage their accounts.
-// If the user is already logged in, it will show their profile picture & redirect them to callbackUrl immediately.
-const ButtonSignin = ({ text = "Get started", extraStyle }) => {
+const ButtonSignin = ({ text = "Signup", extraStyle }) => {
   const supabase = createClient();
   const [user, setUser] = useState(null);
 
@@ -29,7 +26,7 @@ const ButtonSignin = ({ text = "Get started", extraStyle }) => {
     return (
       <Link
         href={config.auth.callbackUrl}
-        className={`btn ${extraStyle ? extraStyle : ""}`}
+        className={`btn  text-white ${extraStyle ? extraStyle : ""}`}
       >
         {user?.user_metadata?.avatar_url ? (
           <img
@@ -45,14 +42,16 @@ const ButtonSignin = ({ text = "Get started", extraStyle }) => {
             {user?.user_metadata?.name?.charAt(0) || user?.email?.charAt(0)}
           </span>
         )}
-        {user?.user_metadata?.name || user?.email || "Account"}
+        <span className="text-3xl ml-2">
+          {user?.user_metadata?.name || user?.email || "Account"}
+        </span>
       </Link>
     );
   }
 
   return (
     <Link
-      className={`btn ${extraStyle ? extraStyle : ""}`}
+      className={`btn bg-blue-800 text-white text-2xl ${extraStyle ? extraStyle : ""}`}
       href={config.auth.loginUrl}
     >
       {text}

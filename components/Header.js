@@ -9,17 +9,20 @@ import logo from "@/app/icon.png";
 import config from "@/config";
 
 const links = [
+
+
+ 
   {
-    href: "/pricing",
-    label: "Pricing",
+    href: "/library",
+    label: "My Library",
   },
-  // {
-  //   href: "/pricing",
-  //   label: "Reviews",
-  // },
   {
     href: "/pricing",
     label: "FAQ",
+  },
+  {
+    href: "/pricing",
+    label: "Pricing",
   },
 ];
 
