@@ -40,7 +40,7 @@ export default function RecommendationDetail() {
       <Suspense fallback={<div>Loading...</div>}>
         <div className="text-gray-100 p-8 flex justify-center items-center">
           <div style={{ width: '50%', textAlign: 'center' }}>
-            <img
+            <image
               src={recommendation.cover}
               alt={`${recommendation.title} cover`}
               style={{ width: '20%', height: 'auto', margin: '0 auto' }}
@@ -58,7 +58,7 @@ export default function RecommendationDetail() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {authorBooks.map(book => (
               <div key={book.id} className="bg-gray-800 rounded-lg overflow-hidden shadow-lg group">
-                <img
+                <image
                   src={book.cover}
                   alt={`${book.title} cover`}
                   className="w-full h-auto object-cover"

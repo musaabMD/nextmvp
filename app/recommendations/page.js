@@ -50,12 +50,13 @@ export default function RecommendationsPage() {
                   alt={`${rec.title} cover`}
                   className="w-full h-auto object-cover"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
-                  <div className="flex flex-col items-start">
-                    <h3 className="text-lg font-bold mb-2">{rec.title}</h3>
-                    <p className="text-sm mb-2">Author: {rec.author}</p>  // Ensure the author detail is included in your data source
-                  </div>
-                </div>
+              // Fix the error about comments inside children section of a tag
+<div className="absolute inset-0 bg-black bg-opacity-75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
+  <div className="flex flex-col items-start">
+    <h3 className="text-lg font-bold mb-2">{rec.title}</h3>
+    <p className="text-sm mb-2">Author: {rec.author}</p>
+  </div>
+</div>
               </div>
             ))}
           </div>

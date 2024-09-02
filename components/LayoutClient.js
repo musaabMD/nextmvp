@@ -23,13 +23,12 @@ const CrispChat = () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-
       if (user) {
         setData({ user });
       }
     };
     getUser();
-  }, []);
+  }, [supabase.auth]); // Add supabase.auth to the dependency array
 
   useEffect(() => {
     if (config?.crisp?.id) {
