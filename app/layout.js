@@ -4,7 +4,6 @@ import { getSEOTags } from "@/libs/seo";
 import ClientLayout from "@/components/LayoutClient";
 import config from "@/config";
 import "./globals.css";
-
 const font = Inter({ subsets: ["latin"] });
 
 export const viewport = {
@@ -23,6 +22,7 @@ export default function RootLayout({ children }) {
     <html lang="en" data-theme={config.colors.theme} className={font.className}>
       {config.domainName && (
         <head>
+          
           <PlausibleProvider domain={config.domainName} />
         </head>
       )}
