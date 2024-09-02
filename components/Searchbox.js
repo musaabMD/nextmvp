@@ -1,11 +1,10 @@
-
-"use client"; // Ensures this component runs on the client-side
-
+"use client";
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { Star, ThumbsUp, BookOpen, Book, BookMarked } from 'lucide-react';
 import { categories, dummyBooks, dummyRecommendations, dummyAuthors } from '../app/data/books';
 import Header from '@/components/Header';
+import Image from 'next/image';
 
 const placeholderImage = '/authorthumbnail.webp';
 
@@ -41,9 +40,11 @@ const AuthorCard = ({ author, bookCount, onClick }) => (
     className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer" 
     onClick={onClick}
   >
-    <image
+    <Image
       src={author.image || placeholderImage}
       alt={`${author.name}`}
+      width={400}
+      height={600}
       className="w-full h-auto object-cover"
     />
     <div className="p-4">
@@ -62,9 +63,11 @@ const RecommendationCard = ({ recommendation, onClick }) => {
       className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer" 
       onClick={onClick}
     >
-      <image
+      <Image
         src={recommendation.cover}
         alt={`${recommendation.title}`}
+        width={400}
+        height={600}
         className="w-full h-auto object-cover"
       />
       <div className="p-4">
@@ -219,9 +222,11 @@ export default function NextBookHomepage() {
                     className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer"
                     onClick={() => handleBookClick(book)}
                   >
-                    <image
+                    <Image
                       src={book.cover}
                       alt={`${book.title} cover`}
+                      width={400}
+                      height={600}
                       className="w-full h-auto object-cover"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
