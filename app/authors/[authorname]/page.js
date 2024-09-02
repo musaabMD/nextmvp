@@ -11,7 +11,7 @@ export default function AuthorDetail() {
   const [authorBooks, setAuthorBooks] = useState([]);
 
   useEffect(() => {
-    const slug = params.authorname; // Ensure this matches your dynamic route segment name
+    const slug = params.authorname;
     if (slug) {
       const formattedName = decodeURIComponent(slug).replace(/-/g, ' ');
       const selectedAuthor = dummyAuthors.find(a => a.name.toLowerCase() === formattedName.toLowerCase());

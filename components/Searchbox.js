@@ -1,8 +1,10 @@
-"use client";
+"use client"; // Ensures this component runs on the client-side
+
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Star, ThumbsUp, BookOpen, Book, BookMarked } from 'lucide-react';
 import { categories, dummyBooks, dummyRecommendations, dummyAuthors } from '../app/data/books';
+import Header from '@/components/Header';
 
 const placeholderImage = '/authorthumbnail.webp';
 
@@ -33,8 +35,11 @@ const BookButton = ({ Icon, label }) => (
   </button>
 );
 
-const AuthorCard = ({ author, bookCount }) => (
-  <div className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group">
+const AuthorCard = ({ author, bookCount, onClick }) => (
+  <div 
+    className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer" 
+    onClick={onClick}
+  >
     <img
       src={author.image || placeholderImage}
       alt={`${author.name}`}
@@ -47,12 +52,15 @@ const AuthorCard = ({ author, bookCount }) => (
   </div>
 );
 
-const RecommendationCard = ({ recommendation }) => {
+const RecommendationCard = ({ recommendation, onClick }) => {
   const author = dummyAuthors.find(author => author.id === recommendation.authorId);
   const bookCount = dummyBooks.filter(book => book.authorId === recommendation.authorId).length;
 
   return (
-    <div className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group">
+    <div 
+      className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer" 
+      onClick={onClick}
+    >
       <img
         src={recommendation.cover}
         alt={`${recommendation.title}`}
@@ -74,13 +82,16 @@ export default function NextBookHomepage() {
   const [filteredAuthors, setFilteredAuthors] = useState([]);
   const [filteredRecommendations, setFilteredRecommendations] = useState([]);
 
+  const router = useRouter();
+
   useEffect(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
+    // Filter books based on category and search term
     const books = dummyBooks.filter(book => {
       const author = dummyAuthors.find(author => author.id === book.authorId);
       return (
-        (selectedCategory === 'All' || book.category === selectedCategory) &&
+        (selectedCategory === 'All' || selectedCategory === book.category) &&
         (
           book.title.toLowerCase().includes(lowerCaseSearchTerm) ||
           author?.name.toLowerCase().includes(lowerCaseSearchTerm) ||
@@ -89,46 +100,52 @@ export default function NextBookHomepage() {
       );
     });
 
-    const authors = dummyAuthors
-      .map(author => {
-        const bookCount = dummyBooks.filter(book => book.authorId === author.id).length;
-        return {
-          ...author,
-          bookCount
-        };
-      })
-      .filter(author =>
-        author.name.toLowerCase().includes(lowerCaseSearchTerm)
-      );
+    // Only filter authors if the "Authors" category is selected
+    const authors = selectedCategory === 'Authors'
+      ? dummyAuthors.filter(author =>
+          author.name.toLowerCase().includes(lowerCaseSearchTerm)
+        )
+      : [];
 
-    const recommendations = dummyRecommendations.filter(recommendation => {
-      const author = dummyAuthors.find(author => author.id === recommendation.authorId);
-      return (
-        recommendation.title.toLowerCase().includes(lowerCaseSearchTerm) ||
-        author?.name.toLowerCase().includes(lowerCaseSearchTerm)
-      );
-    });
+    // Only filter recommendations if the "Recommendations" category is selected
+    const recommendations = selectedCategory === 'Recommendations'
+      ? dummyRecommendations.filter(recommendation => {
+          const author = dummyAuthors.find(author => author.id === recommendation.authorId);
+          return (
+            recommendation.title.toLowerCase().includes(lowerCaseSearchTerm) ||
+            author?.name.toLowerCase().includes(lowerCaseSearchTerm)
+          );
+        })
+      : [];
 
+    // Update state based on the selected category
     setFilteredBooks(books);
     setFilteredAuthors(authors);
     setFilteredRecommendations(recommendations);
   }, [selectedCategory, searchTerm]);
 
-  const router = useRouter();
-
   const handleBookClick = (book) => {
     router.push(`/book/${encodeURIComponent(book.title.toLowerCase().replace(/\s+/g, '-'))}`);
   };
 
+  const handleAuthorClick = (author) => {
+    router.push(`/authors/${encodeURIComponent(author.name.toLowerCase().replace(/\s+/g, '-'))}`);
+  };
+
+  const handleRecommendationClick = (rec) => {
+    router.push(`/recommendations/${encodeURIComponent(rec.title.toLowerCase().replace(/\s+/g, '-'))}`);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
+    <div className="min-h-screen text-gray-100">
+      <Header />
       <div className="flex flex-col items-center pt-10 px-4">
         <div className="text-6xl font-bold mb-8 text-yellow-300">NextBook</div>
         <div className="w-full max-w-2xl mb-6">
           <input
             type="text"
-            placeholder="Search books, authors, or recommendations"
-            className="w-full p-4 text-xl rounded-lg shadow-lg bg-gray-800 border-2 border-blue-500 focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
+            placeholder={`Search ${selectedCategory.toLowerCase()}`}
+            className="w-full p-4 text-xl rounded-lg  border-2 border-blue-500 focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
@@ -151,24 +168,45 @@ export default function NextBookHomepage() {
 
       <div className="container mx-auto px-4 py-8">
         <h2 className="text-3xl font-bold mb-6">{selectedCategory}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-          {filteredAuthors.length > 0 && selectedCategory !== 'Recommendations' && (
-            filteredAuthors.map((author) => (
-              <AuthorCard key={author.id} author={author} bookCount={author.bookCount} />
-            ))
-          )}
 
-          {filteredRecommendations.length > 0 && selectedCategory !== 'Authors' && (
-            filteredRecommendations.map((recommendation) => (
-              <RecommendationCard key={recommendation.id} recommendation={recommendation} />
-            ))
-          )}
+        {/* Render Recommendations */}
+        {selectedCategory === 'Recommendations' && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+            {filteredRecommendations.map((recommendation) => (
+              <RecommendationCard
+                key={recommendation.id}
+                recommendation={recommendation}
+                onClick={() => handleRecommendationClick(recommendation)}
+              />
+            ))}
+          </div>
+        )}
 
-          {filteredBooks.length > 0 && (
-            filteredBooks.map((book) => {
+        {/* Render Authors */}
+        {selectedCategory === 'Authors' && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+            {filteredAuthors.map((author) => (
+              <AuthorCard
+                key={author.id}
+                author={author}
+                bookCount={dummyBooks.filter(book => book.authorId === author.id).length}
+                onClick={() => handleAuthorClick(author)}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Render Books */}
+        {(selectedCategory !== 'Recommendations' && selectedCategory !== 'Authors') && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+            {filteredBooks.map((book) => {
               const author = dummyAuthors.find(author => author.id === book.authorId);
               return (
-                <div key={book.id} className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group" onClick={() => handleBookClick(book)}>
+                <div
+                  key={book.id}
+                  className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer"
+                  onClick={() => handleBookClick(book)}
+                >
                   <img
                     src={book.cover}
                     alt={`${book.title} cover`}
@@ -189,13 +227,14 @@ export default function NextBookHomepage() {
                   </div>
                 </div>
               );
-            })
-          )}
+            })}
+          </div>
+        )}
 
-          {filteredAuthors.length === 0 && filteredRecommendations.length === 0 && filteredBooks.length === 0 && (
-            <div className="text-white text-center">No matches found.</div>
-          )}
-        </div>
+        {/* No matches found */}
+        {filteredAuthors.length === 0 && filteredRecommendations.length === 0 && filteredBooks.length === 0 && (
+          <div className="text-white text-center">No matches found.</div>
+        )}
       </div>
     </div>
   );
