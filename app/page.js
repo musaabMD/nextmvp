@@ -1,11 +1,11 @@
 "use client"; // Ensures this component runs on the client-side
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
-import { Star, ThumbsUp, BookOpen, Book, BookMarked } from 'lucide-react';
-import { categories, dummyBooks, dummyRecommendations, dummyAuthors } from '../app/data/books';
-import Header from '@/components/Header';
 import Image from 'next/image';
+import { Star, ThumbsUp, BookOpen, Book, BookMarked } from 'lucide-react';
+import { dummyBooks, dummyRecommendations, dummyAuthors } from '../app/data/books';
+import Header from '@/components/Header';
 
 const placeholderImage = '/authorthumbnail.webp';
 
@@ -44,9 +44,8 @@ const AuthorCard = ({ author, bookCount, onClick }) => (
     <Image
       src={author.image || placeholderImage}
       alt={`${author.name}`}
-      layout="responsive"
-      width={500}
-      height={500}
+      width={400}
+      height={600}
       className="w-full h-auto object-cover"
     />
     <div className="p-4">
@@ -68,9 +67,8 @@ const RecommendationCard = ({ recommendation, onClick }) => {
       <Image
         src={recommendation.cover}
         alt={`${recommendation.title}`}
-        layout="responsive"
-        width={500}
-        height={500}
+        width={400}
+        height={600}
         className="w-full h-auto object-cover"
       />
       <div className="p-4">
@@ -98,7 +96,7 @@ export default function NextBookHomepage() {
     const books = dummyBooks.filter(book => {
       const author = dummyAuthors.find(author => author.id === book.authorId);
       return (
-        (selectedCategory === 'All' || book.category === selectedCategory) &&
+        (selectedCategory === 'All' || selectedCategory === book.category) &&
         (
           book.title.toLowerCase().includes(lowerCaseSearchTerm) ||
           author?.name.toLowerCase().includes(lowerCaseSearchTerm) ||
@@ -107,14 +105,14 @@ export default function NextBookHomepage() {
       );
     });
 
-    // Filter authors only if 'Authors' category is selected
+    // Only filter authors if the "Authors" category is selected
     const authors = selectedCategory === 'Authors'
       ? dummyAuthors.filter(author =>
           author.name.toLowerCase().includes(lowerCaseSearchTerm)
         )
       : [];
 
-    // Filter recommendations only if 'Recommendations' category is selected
+    // Only filter recommendations if the "Recommendations" category is selected
     const recommendations = selectedCategory === 'Recommendations'
       ? dummyRecommendations.filter(recommendation => {
           const author = dummyAuthors.find(author => author.id === recommendation.authorId);
@@ -144,20 +142,24 @@ export default function NextBookHomepage() {
   };
 
   return (
-    <>
-      <Header />
-      <div className="min-h-screen text-gray-100">
-        <div className="flex flex-col items-center pt-10 px-4">
-          <div className="text-6xl font-bold mb-8 text-yellow-300">NextBook</div>
-          <div className="w-full max-w-2xl mb-6">
+    <div className="min-h-screen text-gray-100">
+      <Suspense fallback={<div>Loading...</div>}>
+        <Header />
+      </Suspense>
+      <div className="flex flex-col items-center pt-10 px-4">
+        <div className="text-6xl font-bold mb-8 text-yellow-300">NextBook</div>
+        <div className="w-full max-w-2xl mb-6">
+          <Suspense fallback={<div>Loading search...</div>}>
             <input
               type="text"
-              placeholder="Search books, authors, or recommendations"
-              className="w-full p-4 text-xl rounded-lg shadow-lg border-2 border-blue-500 focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
+              placeholder={`Search ${selectedCategory.toLowerCase()}`}
+              className="w-full p-4 text-xl rounded-lg  border-2 border-blue-500 focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </div>
-          <div className="flex flex-wrap justify-center max-w-4xl mb-8">
+          </Suspense>
+        </div>
+        <div className="flex flex-wrap justify-center max-w-4xl mb-8">
+          <Suspense fallback={<div>Loading categories...</div>}>
             {['All', 'Recommendations', 'Authors', 'Fiction', 'Non-Fiction', 'Mystery', 'Sci-Fi', 'Romance', 'Biography', 'History', 'Self-Help', 'Business', 'Travel'].map((category) => (
               <button
                 key={category}
@@ -171,12 +173,14 @@ export default function NextBookHomepage() {
                 {category}
               </button>
             ))}
-          </div>
+          </Suspense>
         </div>
+      </div>
 
-        <div className="container mx-auto px-4 py-8">
-          <h2 className="text-3xl font-bold mb-6">{selectedCategory}</h2>
+      <div className="container mx-auto px-4 py-8">
+        <h2 className="text-3xl font-bold mb-6">{selectedCategory}</h2>
 
+        <Suspense fallback={<div>Loading recommendations...</div>}>
           {/* Render Recommendations */}
           {selectedCategory === 'Recommendations' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
@@ -189,7 +193,9 @@ export default function NextBookHomepage() {
               ))}
             </div>
           )}
+        </Suspense>
 
+        <Suspense fallback={<div>Loading authors...</div>}>
           {/* Render Authors */}
           {selectedCategory === 'Authors' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
@@ -203,9 +209,11 @@ export default function NextBookHomepage() {
               ))}
             </div>
           )}
+        </Suspense>
 
+        <Suspense fallback={<div>Loading books...</div>}>
           {/* Render Books */}
-          {(selectedCategory === 'All' || categories.includes(selectedCategory)) && (
+          {(selectedCategory !== 'Recommendations' && selectedCategory !== 'Authors') && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
               {filteredBooks.map((book) => {
                 const author = dummyAuthors.find(author => author.id === book.authorId);
@@ -218,9 +226,8 @@ export default function NextBookHomepage() {
                     <Image
                       src={book.cover}
                       alt={`${book.title} cover`}
-                      layout="responsive"
-                      width={500}
-                      height={500}
+                      width={400}
+                      height={600}
                       className="w-full h-auto object-cover"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
@@ -241,13 +248,13 @@ export default function NextBookHomepage() {
               })}
             </div>
           )}
+        </Suspense>
 
-          {/* No matches found */}
-          {filteredAuthors.length === 0 && filteredRecommendations.length === 0 && filteredBooks.length === 0 && (
-            <div className="text-white text-center">No matches found.</div>
-          )}
-        </div>
+        {/* No matches found */}
+        {filteredAuthors.length === 0 && filteredRecommendations.length === 0 && filteredBooks.length === 0 && (
+          <div className="text-white text-center">No matches found.</div>
+        )}
       </div>
-    </>
+    </div>
   );
 }

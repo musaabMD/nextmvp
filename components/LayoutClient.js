@@ -1,8 +1,7 @@
-
 "use client";
 
 import { createClient } from "@/libs/supabase/client";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Crisp } from "crisp-sdk-web";
 import NextTopLoader from "nextjs-toploader";
@@ -65,7 +64,7 @@ const CrispChat = () => {
 // 1. NextTopLoader: Show a progress bar at the top when navigating between pages
 // 2. Toaster: Show Success/Error messages anywhere from the app with toast()
 // 3. Tooltip: Show tooltips if any JSX elements has these 2 attributes: data-tooltip-id="tooltip" data-tooltip-content=""
-// 4. CrispChat: Set Crisp customer chat support (see above)
+// 4. CrispChat: Set Crisp customer chat support
 const ClientLayout = ({ children }) => {
   return (
     <>
