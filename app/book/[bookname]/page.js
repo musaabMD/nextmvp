@@ -1,5 +1,7 @@
+"use client";  // Ensures this component runs on the client-side
+
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';  // Changed from 'next/navigation' to 'next/router'
+import { useRouter } from 'next/router';  // Correct import for client components
 import Image from 'next/image';
 import Header from '@/components/Header';
 
