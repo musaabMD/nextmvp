@@ -7,6 +7,8 @@ const nextConfig = {
       "pbs.twimg.com",
       "images.unsplash.com",
       "logos-world.net",
+      "m.media-amazon.com",
+      "static.tvtropes.org", // Added domain
     ],
   },
 };
