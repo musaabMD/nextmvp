@@ -25,6 +25,7 @@ export default function BookDetail() {
   return (
     <>
       <Header />
+      <h1> hi</h1>
       <div className="  text-gray-100 p-8 flex justify-center items-center">
         <div style={{ width: '50%', textAlign: 'center' }}> {/* Adjusted width and text alignment */}
           <img
