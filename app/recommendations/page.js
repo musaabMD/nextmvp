@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from "@/components/Header";
+import Image from 'next/image'; // Import Image component
 import { dummyRecommendations } from '../data/books'; // Ensure this import is used in the component
 
 const CustomCursor = () => (
@@ -45,18 +46,19 @@ export default function RecommendationsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
             {filteredRecommendations.map((rec) => (
               <div key={rec.id} className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group" onClick={() => handleRecommendationClick(rec)}>
-                <img
+                <Image
                   src={rec.cover}
                   alt={`${rec.title} cover`}
-                  className="w-full h-auto object-cover"
+                  layout='fill'
+                  objectFit='cover'
                 />
-              // Fix the error about comments inside children section of a tag
-<div className="absolute inset-0 bg-black bg-opacity-75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
-  <div className="flex flex-col items-start">
-    <h3 className="text-lg font-bold mb-2">{rec.title}</h3>
-    <p className="text-sm mb-2">Author: {rec.author}</p>
-  </div>
-</div>
+                {/* Fix the error about comments inside children section of a tag */}
+                <div className="absolute inset-0 bg-black bg-opacity-75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
+                  <div className="flex flex-col items-start">
+                    <h3 className="text-lg font-bold mb-2">{rec.title}</h3>
+                    <p className="text-sm mb-2">Author: {rec.author}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
