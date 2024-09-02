@@ -46,7 +46,7 @@ export default function RecommendationsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
             {filteredRecommendations.map((rec) => (
               <div key={rec.id} className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group" onClick={() => handleRecommendationClick(rec)}>
-                <img
+                <image
                   src={rec.cover}
                   alt={`${rec.title} cover`}
                   className="w-full h-auto object-cover"

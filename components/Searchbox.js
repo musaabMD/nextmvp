@@ -41,7 +41,7 @@ const AuthorCard = ({ author, bookCount, onClick }) => (
     className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer" 
     onClick={onClick}
   >
-    <img
+    <image
       src={author.image || placeholderImage}
       alt={`${author.name}`}
       className="w-full h-auto object-cover"
@@ -62,7 +62,7 @@ const RecommendationCard = ({ recommendation, onClick }) => {
       className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer" 
       onClick={onClick}
     >
-      <img
+      <image
         src={recommendation.cover}
         alt={`${recommendation.title}`}
         className="w-full h-auto object-cover"
@@ -219,7 +219,7 @@ export default function NextBookHomepage() {
                     className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer"
                     onClick={() => handleBookClick(book)}
                   >
-                    <img
+                    <image
                       src={book.cover}
                       alt={`${book.title} cover`}
                       className="w-full h-auto object-cover"
