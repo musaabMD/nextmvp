@@ -1,7 +1,8 @@
+
 "use client";
 
 import { createClient } from "@/libs/supabase/client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { usePathname } from "next/navigation";
 import { Crisp } from "crisp-sdk-web";
 import NextTopLoader from "nextjs-toploader";

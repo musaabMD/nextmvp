@@ -1,3 +1,4 @@
+
 "use client"; // Ensures this component runs on the client-side
 
 import React, { useState, useEffect, Suspense } from 'react';
