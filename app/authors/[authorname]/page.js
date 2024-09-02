@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { dummyAuthors, dummyBooks } from '../../data/books';
 import Header from '@/components/Header';
-
+import { Suspense } from 'react';
 export default function AuthorDetail() {
   const params = useParams();
   const [author, setAuthor] = useState(null);
@@ -31,6 +31,7 @@ export default function AuthorDetail() {
   return (
     <>
       <Header />
+      <Suspense>
       <div className="text-gray-100 p-8 flex justify-center items-center">
         <div style={{ width: '50%', textAlign: 'center' }}>
           <img
@@ -64,6 +65,7 @@ export default function AuthorDetail() {
           ))}
         </div>
       </div>
+      </Suspense>
     </>
   );
 }

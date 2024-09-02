@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { dummyAuthors, dummyBooks, dummyRecommendations } from '../../data/books';
 import Header from '@/components/Header';
-
+import { Suspense } from 'react';
 export default function RecommendationDetail() {
   const params = useParams();
   const [recommendation, setRecommendation] = useState(null);
@@ -31,12 +31,15 @@ export default function RecommendationDetail() {
   }, [params.recommendationname]);
 
   if (!recommendation || !author) {
+    <Suspense> 
     return <div>Loading...</div>; // Show loading until recommendation and author are found
+    </Suspense>
   }
 
   return (
     <>
       <Header />
+      <Suspense>
       <div className="text-gray-100 p-8 flex justify-center items-center">
         <div style={{ width: '50%', textAlign: 'center' }}>
           <img
@@ -70,6 +73,7 @@ export default function RecommendationDetail() {
           ))}
         </div>
       </div>
+      </Suspense>
     </>
   );
 }

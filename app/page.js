@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Star, ThumbsUp, BookOpen, Book, BookMarked } from 'lucide-react';
 import { categories, dummyBooks, dummyRecommendations, dummyAuthors } from '../app/data/books';
 import Header from '@/components/Header';
+import Image from 'next/image';
 
 const placeholderImage = '/authorthumbnail.webp';
 
@@ -40,9 +41,12 @@ const AuthorCard = ({ author, bookCount, onClick }) => (
     className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer" 
     onClick={onClick}
   >
-    <img
+    <Image
       src={author.image || placeholderImage}
       alt={`${author.name}`}
+      layout="responsive"
+      width={500}
+      height={500}
       className="w-full h-auto object-cover"
     />
     <div className="p-4">
@@ -61,9 +65,12 @@ const RecommendationCard = ({ recommendation, onClick }) => {
       className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer" 
       onClick={onClick}
     >
-      <img
+      <Image
         src={recommendation.cover}
         alt={`${recommendation.title}`}
+        layout="responsive"
+        width={500}
+        height={500}
         className="w-full h-auto object-cover"
       />
       <div className="p-4">
@@ -208,9 +215,12 @@ export default function NextBookHomepage() {
                     className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer"
                     onClick={() => handleBookClick(book)}
                   >
-                    <img
+                    <Image
                       src={book.cover}
                       alt={`${book.title} cover`}
+                      layout="responsive"
+                      width={500}
+                      height={500}
                       className="w-full h-auto object-cover"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">

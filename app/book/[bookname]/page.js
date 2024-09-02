@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { dummyBooks } from '../../data/books';
 import Header from '@/components/Header';
-
+import { Suspense } from 'react';
 export default function BookDetail() {
   const params = useParams();
   const [book, setBook] = useState(null);
@@ -25,6 +25,7 @@ export default function BookDetail() {
   return (
     <>
       <Header />
+      <Suspense>
       <h1> hi</h1>
       <div className="  text-gray-100 p-8 flex justify-center items-center">
         <div style={{ width: '50%', textAlign: 'center' }}> {/* Adjusted width and text alignment */}
@@ -40,6 +41,7 @@ export default function BookDetail() {
           </div>
         </div>
       </div>
+      </Suspense>
     </>
   );
 }

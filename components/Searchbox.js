@@ -1,6 +1,6 @@
 "use client"; // Ensures this component runs on the client-side
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { Star, ThumbsUp, BookOpen, Book, BookMarked } from 'lucide-react';
 import { categories, dummyBooks, dummyRecommendations, dummyAuthors } from '../app/data/books';
@@ -138,98 +138,110 @@ export default function NextBookHomepage() {
 
   return (
     <div className="min-h-screen text-gray-100">
-      <Header />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Header />
+      </Suspense>
       <div className="flex flex-col items-center pt-10 px-4">
         <div className="text-6xl font-bold mb-8 text-yellow-300">NextBook</div>
         <div className="w-full max-w-2xl mb-6">
-          <input
-            type="text"
-            placeholder={`Search ${selectedCategory.toLowerCase()}`}
-            className="w-full p-4 text-xl rounded-lg  border-2 border-blue-500 focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <Suspense fallback={<div>Loading search...</div>}>
+            <input
+              type="text"
+              placeholder={`Search ${selectedCategory.toLowerCase()}`}
+              className="w-full p-4 text-xl rounded-lg  border-2 border-blue-500 focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </Suspense>
         </div>
         <div className="flex flex-wrap justify-center max-w-4xl mb-8">
-          {['All', 'Recommendations', 'Authors', 'Fiction', 'Non-Fiction', 'Mystery', 'Sci-Fi', 'Romance', 'Biography', 'History', 'Self-Help', 'Business', 'Travel'].map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`m-2 px-4 py-2 rounded-full text-2xl font-sans font-semibold transition-colors duration-200 ${
-                selectedCategory === category
-                  ? 'bg-blue-900 text-gray-300'
-                  : 'bg-gray-900 text-gray-400 hover:bg-gray-900'
-              } shadow-md`}
-            >
-              {category}
-            </button>
-          ))}
+          <Suspense fallback={<div>Loading categories...</div>}>
+            {['All', 'Recommendations', 'Authors', 'Fiction', 'Non-Fiction', 'Mystery', 'Sci-Fi', 'Romance', 'Biography', 'History', 'Self-Help', 'Business', 'Travel'].map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`m-2 px-4 py-2 rounded-full text-2xl font-sans font-semibold transition-colors duration-200 ${
+                  selectedCategory === category
+                    ? 'bg-blue-900 text-gray-300'
+                    : 'bg-gray-900 text-gray-400 hover:bg-gray-900'
+                } shadow-md`}
+              >
+                {category}
+              </button>
+            ))}
+          </Suspense>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
         <h2 className="text-3xl font-bold mb-6">{selectedCategory}</h2>
 
-        {/* Render Recommendations */}
-        {selectedCategory === 'Recommendations' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-            {filteredRecommendations.map((recommendation) => (
-              <RecommendationCard
-                key={recommendation.id}
-                recommendation={recommendation}
-                onClick={() => handleRecommendationClick(recommendation)}
-              />
-            ))}
-          </div>
-        )}
+        <Suspense fallback={<div>Loading recommendations...</div>}>
+          {/* Render Recommendations */}
+          {selectedCategory === 'Recommendations' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+              {filteredRecommendations.map((recommendation) => (
+                <RecommendationCard
+                  key={recommendation.id}
+                  recommendation={recommendation}
+                  onClick={() => handleRecommendationClick(recommendation)}
+                />
+              ))}
+            </div>
+          )}
+        </Suspense>
 
-        {/* Render Authors */}
-        {selectedCategory === 'Authors' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-            {filteredAuthors.map((author) => (
-              <AuthorCard
-                key={author.id}
-                author={author}
-                bookCount={dummyBooks.filter(book => book.authorId === author.id).length}
-                onClick={() => handleAuthorClick(author)}
-              />
-            ))}
-          </div>
-        )}
+        <Suspense fallback={<div>Loading authors...</div>}>
+          {/* Render Authors */}
+          {selectedCategory === 'Authors' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+              {filteredAuthors.map((author) => (
+                <AuthorCard
+                  key={author.id}
+                  author={author}
+                  bookCount={dummyBooks.filter(book => book.authorId === author.id).length}
+                  onClick={() => handleAuthorClick(author)}
+                />
+              ))}
+            </div>
+          )}
+        </Suspense>
 
-        {/* Render Books */}
-        {(selectedCategory !== 'Recommendations' && selectedCategory !== 'Authors') && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-            {filteredBooks.map((book) => {
-              const author = dummyAuthors.find(author => author.id === book.authorId);
-              return (
-                <div
-                  key={book.id}
-                  className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer"
-                  onClick={() => handleBookClick(book)}
-                >
-                  <img
-                    src={book.cover}
-                    alt={`${book.title} cover`}
-                    className="w-full h-auto object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
-                    <div className="flex flex-col items-start">
-                      <h3 className="text-lg font-bold mb-2">{book.title}</h3>
-                      <p className="text-sm mb-2">{author?.name} ({book.category})</p>
-                      <StarRating rating={book.rating} />
-                    </div>
-                    <div className="flex flex-col w-full space-y-2 mt-4">
-                      <BookButton Icon={ThumbsUp} label="Recommend" />
-                      <BookButton Icon={BookOpen} label="Want to Read" />
-                      <BookButton Icon={Book} label="Read" />
-                      <BookButton Icon={BookMarked} label="Currently Reading" />
+        <Suspense fallback={<div>Loading books...</div>}>
+          {/* Render Books */}
+          {(selectedCategory !== 'Recommendations' && selectedCategory !== 'Authors') && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+              {filteredBooks.map((book) => {
+                const author = dummyAuthors.find(author => author.id === book.authorId);
+                return (
+                  <div
+                    key={book.id}
+                    className="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer"
+                    onClick={() => handleBookClick(book)}
+                  >
+                    <img
+                      src={book.cover}
+                      alt={`${book.title} cover`}
+                      className="w-full h-auto object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
+                      <div className="flex flex-col items-start">
+                        <h3 className="text-lg font-bold mb-2">{book.title}</h3>
+                        <p className="text-sm mb-2">{author?.name} ({book.category})</p>
+                        <StarRating rating={book.rating} />
+                      </div>
+                      <div className="flex flex-col w-full space-y-2 mt-4">
+                        <BookButton Icon={ThumbsUp} label="Recommend" />
+                        <BookButton Icon={BookOpen} label="Want to Read" />
+                        <BookButton Icon={Book} label="Read" />
+                        <BookButton Icon={BookMarked} label="Currently Reading" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                );
+              })}
+            </div>
+          )}
+        </Suspense>
 
         {/* No matches found */}
         {filteredAuthors.length === 0 && filteredRecommendations.length === 0 && filteredBooks.length === 0 && (

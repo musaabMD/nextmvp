@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { dummyRecommendations, dummyAuthors } from '../data/books';
 import Header from "@/components/Header";
-
+import { Suspense } from 'react';
 const CustomCursor = () => (
   <style jsx global>{`
     body {
@@ -33,7 +33,7 @@ export default function RecommendationsPage() {
     <>
       <CustomCursor />
       <Header />
-      
+      <Suspense>
       <div className="container mx-auto px-4 py-8">
         <input
           type="text"
@@ -60,6 +60,7 @@ export default function RecommendationsPage() {
           ))}
         </div>
       </div>
+      </Suspense>
     </>
   );
 }
